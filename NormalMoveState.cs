@@ -9,7 +9,7 @@ using TinyTeam.UI;
 /// </summary>
 public class NormalMoveState : FSMState
 {
-    public NormalMoveState(Animator animator, Transform player, AimIK ik) : base(animator, player, ik)
+    public NormalMoveState(Transform player) : base(player)
     {
         stateID = StateID.NormalMove;
     }
@@ -49,6 +49,7 @@ public class NormalMoveState : FSMState
 
         else if (playerRayCast.isCoverR && DLInputManager.GetButtonDown(ActionCode.Cross))
         {
+            Debug.Log(1);
             playerRotateWithCamera.enabled = false;
             CoroutineTaskManager.Instance.WaitSecondTodo(() =>
             {
@@ -78,6 +79,7 @@ public class NormalMoveState : FSMState
         }
         else if (playerRayCast.isCoverL && DLInputManager.GetButtonDown(ActionCode.Cross))
         {
+            Debug.Log(1);
             playerRotateWithCamera.enabled = false;
             CoroutineTaskManager.Instance.WaitSecondTodo(() =>
             {
@@ -108,6 +110,7 @@ public class NormalMoveState : FSMState
 
         else if (playerRayCast.isCoverHiR && DLInputManager.GetButtonDown(ActionCode.Cross))
         {
+            Debug.Log(1);
             playerRotateWithCamera.enabled = false;
 
             if (playerRayCast.isFirstSide)
@@ -132,6 +135,7 @@ public class NormalMoveState : FSMState
         }
         else if (playerRayCast.isCoverHiL && DLInputManager.GetButtonDown(ActionCode.Cross))
         {
+            Debug.Log(1);
             playerRotateWithCamera.enabled = false;
 
             if (playerRayCast.isFirstSide)

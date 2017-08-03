@@ -9,6 +9,7 @@ public class FSMSystem
     public List<FSMState> States;
     public bool isTransition;
     private StateID _NextStateID;
+    private float _TransitionDuration;
     public StateID NextStateId
     {
         get { return _NextStateID; }
@@ -60,6 +61,8 @@ public class FSMSystem
             return;
         }
 
+
+
         if (trans == Transition.NullTransition)
         {
             Debug.LogError("FSM ERROR: NullTransition is not allowed for a real transition");
@@ -75,18 +78,22 @@ public class FSMSystem
 
         _NextStateID = id;
 
+
+
         foreach (FSMState state in States)
         {
             if (state.ID == _NextStateID)
             {
+                _TransitionDuration = _CurrentState.dic[trans];
                 _CurrentState.DoBeforeLeaving();
+                _CurrentState = null;
                 state.DoBeforeEnter();
                 isTransition = true;
                 CoroutineTaskManager.Instance.WaitSecondTodo(() =>
                 {
                     _CurrentState = state;
                     isTransition = false;
-                }, _CurrentState.dic[trans]);
+                }, _TransitionDuration);
                 break;
             }
         }

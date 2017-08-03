@@ -122,8 +122,14 @@ public enum Transition
     RollTSNormalMove,//
     TurnRTSFightIdle, //
     TurnRTSTurnRBeforeDown, //
+    TurnRTSTurnL,
+    TurnRTSNormalIdle,
+    TurnRTSNormalMove,
     TurnLTSFightIdle,//
     TurnLTSTurnLBeforeDown,//
+    TurnLTSTurnR,
+    TurnLTSNormalIdle,
+    TurnLTSNormalMove,
     HeavyGunStartTSHeavyGunIdle,//
     HeavyGunIdleTSHeavyGunShoot,//
     HeavyGunIdleTSHeavyGunEnd,//
@@ -186,11 +192,9 @@ public abstract class FSMState
 {
     public Animator animator;
     public AimIK ik;
-    public FullBodyBipedIK fullBodyBipedIk;
     public CapsuleCollider capsuleCollider;
     public CharacterController characterController;
     public Transform player;
-
     public PlayerFSM PlayerFsm;
     public PlayerController playerController;
     public PlayerRotateWithCamera playerRotateWithCamera;
@@ -198,67 +202,18 @@ public abstract class FSMState
     public PlayerAudioEffect PlayerAudioEffect;
 
 
-    public FSMState(Animator animator, Transform player)
+    public FSMState(Transform player)
     {
-        this.animator = animator;
         this.player = player;
-        playerController = player.GetComponent<PlayerController>();
-        playerRotateWithCamera = player.GetComponent<PlayerRotateWithCamera>();
-        playerRayCast = player.GetComponent<PlayerRayCast>();
-        PlayerAudioEffect = player.GetComponent<PlayerAudioEffect>();
-        PlayerFsm = player.GetComponent<PlayerFSM>();
+        animator = player.GetComponent<Animator>();
         ik = player.GetComponent<AimIK>();
-    }
-
-    public FSMState(Animator animator, Transform player, FullBodyBipedIK fullBodyBipedIk)
-    {
-        this.animator = animator;
-        this.player = player;
-        this.fullBodyBipedIk = fullBodyBipedIk;
         playerController = player.GetComponent<PlayerController>();
+        characterController = player.GetComponent<CharacterController>();
+        capsuleCollider = player.GetComponent<CapsuleCollider>();
+        PlayerFsm = player.GetComponent<PlayerFSM>();
         playerRotateWithCamera = player.GetComponent<PlayerRotateWithCamera>();
         playerRayCast = player.GetComponent<PlayerRayCast>();
         PlayerAudioEffect = player.GetComponent<PlayerAudioEffect>();
-        PlayerFsm = player.GetComponent<PlayerFSM>();
-    }
-
-    public FSMState(Animator animator, Transform player, AimIK ik)
-    {
-        this.animator = animator;
-        this.player = player;
-        this.ik = ik;
-        playerController = player.GetComponent<PlayerController>();
-        playerRotateWithCamera = player.GetComponent<PlayerRotateWithCamera>();
-        playerRayCast = player.GetComponent<PlayerRayCast>();
-        PlayerAudioEffect = player.GetComponent<PlayerAudioEffect>();
-        PlayerFsm = player.GetComponent<PlayerFSM>();
-    }
-
-    public FSMState(Animator animator, Transform player, CapsuleCollider capsuleCollider, CharacterController characterController)
-    {
-        this.animator = animator;
-        this.player = player;
-        this.capsuleCollider = capsuleCollider;
-        this.characterController = characterController;
-        playerController = player.GetComponent<PlayerController>();
-        playerRotateWithCamera = player.GetComponent<PlayerRotateWithCamera>();
-        playerRayCast = player.GetComponent<PlayerRayCast>();
-        PlayerAudioEffect = player.GetComponent<PlayerAudioEffect>();
-        PlayerFsm = player.GetComponent<PlayerFSM>();
-    }
-
-    public FSMState(Animator animator, Transform player, AimIK ik, CapsuleCollider capsuleCollider, CharacterController characterController)
-    {
-        this.animator = animator;
-        this.player = player;
-        this.ik = ik;
-        this.capsuleCollider = capsuleCollider;
-        this.characterController = characterController;
-        playerController = player.GetComponent<PlayerController>();
-        playerRotateWithCamera = player.GetComponent<PlayerRotateWithCamera>();
-        playerRayCast = player.GetComponent<PlayerRayCast>();
-        PlayerAudioEffect = player.GetComponent<PlayerAudioEffect>();
-        PlayerFsm = player.GetComponent<PlayerFSM>();
     }
 
     public Dictionary<Transition, StateID> map = new Dictionary<Transition, StateID>();
@@ -270,7 +225,7 @@ public abstract class FSMState
         get { return stateID; }
     }
 
-    public void AddTransition(Transition trans, StateID id, float delaytime = 0f)
+    public void AddTransition(Transition trans, StateID id, float delaytime = 0.02f)
     {
         if (trans == Transition.NullTransition)
         {

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using DLFramework;
-using RootMotion.FinalIK;
 using DG.Tweening;
 using TinyTeam.UI;
 
@@ -9,7 +8,7 @@ using TinyTeam.UI;
 /// </summary>
 public class NormalIdleState : FSMState
 {
-    public NormalIdleState(Animator animator, Transform player, AimIK ik) : base(animator, player, ik)
+    public NormalIdleState(Transform player) : base(player)
     {
         stateID = StateID.NormalIdle;
     }
@@ -21,6 +20,8 @@ public class NormalIdleState : FSMState
         playerController.isSPrint = false;
         animator.applyRootMotion = false;
         playerRotateWithCamera.enabled = true;
+        playerController.CameraStartRotateForward = Vector3.ProjectOnPlane(playerController.Camera.forward, new Vector3(0, 1, 0));
+        playerController.CameraStartRotateRight = Vector3.ProjectOnPlane(playerController.Camera.right, new Vector3(0, 1, 0));
         WeaponManager.Instance.SwitchGun(WeaponType.WeaponRight);
         playerController.CharacterCameraProxy.SwitchCameraModeType(CameraModeType.NormalMode);
         playerController.CharacterCameraMouseLook.SetEventType(MouseLookModeType.NormalMode);
@@ -42,7 +43,6 @@ public class NormalIdleState : FSMState
         if (DLInputManager.RightTrigger(ActionCode.R2) || DLInputManager.LeftTrigger(ActionCode.L2))
         {
             PlayerFsm.SetTransition(Transition.NormalIdleTSFightIdle);
-            Debug.Log("idle->fightidle");
             return;
         }
 
